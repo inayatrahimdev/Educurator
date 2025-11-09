@@ -1,0 +1,58 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: educurator-app
+  NODE_VERSION: '18.x'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: server/package-lock.json
+
+    - name: Install dependencies (Server)
+      run: |
+        cd server
+        npm ci
+
+    - name: Install dependencies (Client)
+      run: |
+        cd client
+        npm ci
+
+    - name: Build client
+      run: |
+        cd client
+        npm run build
+      env:
+        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+
+    - name: Copy client build to server
+      run: |
+        mkdir -p server/public
+        cp -r client/build/* server/public/
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ./server
+
+

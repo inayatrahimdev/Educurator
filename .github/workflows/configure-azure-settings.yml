@@ -1,0 +1,37 @@
+name: Configure Azure Web App Settings
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  configure-settings:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Configure App Settings
+      run: |
+        az webapp config appsettings set \
+          --resource-group educurator-rg \
+          --name educurator-app \
+          --settings \
+            DB_USER="${{ secrets.AZURE_SQL_USER }}" \
+            DB_PASS="${{ secrets.AZURE_SQL_PASSWORD }}" \
+            DB_SERVER="${{ secrets.AZURE_SQL_SERVER }}" \
+            DB_NAME="${{ secrets.AZURE_SQL_DATABASE }}" \
+            AZURE_SQL="true" \
+            DB_ENCRYPT="true" \
+            JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            AZURE_OPENAI_ENDPOINT="https://ai-inayat.openai.azure.com/" \
+            AZURE_OPENAI_KEY="${{ secrets.OPENAI_API_KEY }}" \
+            AZURE_OPENAI_DEPLOYMENT="gpt-4" \
+            AZURE_OPENAI_API_VERSION="2024-02-15-preview" \
+            NODE_ENV="production" \
+            PORT="8080"
+

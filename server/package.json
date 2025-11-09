@@ -1,0 +1,37 @@
+{
+    "name": "educurator-server",
+    "version": "1.0.0",
+    "description": "Backend server for Educurator educational platform",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js",
+        "init-db": "node scripts/initDatabase.js",
+        "setup": "node scripts/initDatabase.js",
+        "test-auth": "node test-auth.js"
+    },
+    "keywords": [
+        "education",
+        "courses",
+        "learning"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@azure/openai": "^2.0.0",
+        "bcryptjs": "^2.4.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "express-validator": "^7.0.1",
+        "helmet": "^7.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "morgan": "^1.10.0",
+        "mssql": "^10.0.1",
+        "openai": "^4.20.1"
+    },
+    "devDependencies": {
+        "axios": "^1.13.2",
+        "nodemon": "^3.0.2"
+    }
+}
